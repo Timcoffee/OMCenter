@@ -7,7 +7,7 @@
       <el-col :span="16">
         <div>
           <el-menu :default-active="activeIndex" class="el-menu-demo head-module" mode="horizontal"
-                   @select="handleSelect">
+                   @select="handleSelect" router>
             <el-menu-item class="head-module" index="1">CMDB</el-menu-item>
             <el-menu-item class="head-module" index="2">应用中心</el-menu-item>
             <el-menu-item class="head-module" index="3">任务中心</el-menu-item>
