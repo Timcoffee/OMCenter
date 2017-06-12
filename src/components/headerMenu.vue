@@ -37,7 +37,7 @@
     data() {
       return {
         activeIndex: '1',
-        username: 'test'
+        username: localStorage.getItem('username')
       };
     },
     methods: {
@@ -47,7 +47,7 @@
     }
   }
 </script>
-<style lang="less">
+<style lang="less" scoped>
   .head-module{
     height: 100px !important;
     line-height: 100px !important;

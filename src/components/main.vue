@@ -46,7 +46,7 @@ export default {
     .content-view {
       float:left; display:inline;
       height: 100%;
-      background: none repeat scroll 0 0 #000;
+      background: none repeat scroll 0 0 #dedede;
       position: absolute;
       left: 250px;
       right: 0;
