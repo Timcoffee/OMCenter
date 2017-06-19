@@ -1,43 +1,69 @@
 <template>
   <div class="sidebar">
-    <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
-      <el-submenu index="1">
-        <template slot="title"><i class="el-icon-message"></i>导航一</template>
-        <el-menu-item-group>
-          <template slot="title">分组一</template>
-          <el-menu-item index="1-1">选项1</el-menu-item>
-          <el-menu-item index="1-2">选项2</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="分组2">
-          <el-menu-item index="1-3">选项3</el-menu-item>
-        </el-menu-item-group>
-        <el-submenu index="1-4">
-          <template slot="title">选项4</template>
-          <el-menu-item index="1-4-1">选项1</el-menu-item>
+    <el-menu id="leftMenu" default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+             @select="handleSelect">
+      <el-submenu v-bind:index="group.id" v-for="group in leftList" :key="group.id">
+        <template slot="title"><i class="el-icon-message"></i>{{ group.name }}</template>
+        <el-menu-item v-if="item.children.length == 0" v-bind:index="item.id" v-for="item in group.children"
+                      :key="item.id">{{ item.name }}
+        </el-menu-item>
+        <el-submenu v-if="item.children.length > 0" v-bind:index="item.id" v-for="item in group.children"
+                    :key="item.id">
+          <template slot="title">{{ item.name }}</template>
         </el-submenu>
       </el-submenu>
-      <el-menu-item index="2"><i class="el-icon-menu"></i>导航二</el-menu-item>
-      <el-menu-item index="3"><i class="el-icon-setting"></i>导航三</el-menu-item>
     </el-menu>
   </div>
 </template>
 <script>
+  import {store} from '../store'
+  import router from '../router'
   export default {
+    data: function () {
+      return {
+        leftList: [
+          {id: '1', name: '仪表盘', children: [{id: '1-1', name: '监控', children: []}]},
+          {id: '2', name: '控制台', children: [{id: '2-1', name: '个人中心', children: []}]}
+        ]
+      }
+    },
+    mounted () {
+      console.log(this.leftList)
+      var set = this
+      store.$on('test', function (msg) {
+        var data =[
+          {id: '3', name: 'test1', children: [{id: '3-1', name: 'test11', children: []}]},
+          {id: '4', name: 'test2', children: [{id: '4-1', name: 'test22', children: []}]}
+        ]
+        console.log(set.leftList)
+        set.leftList.splice(0,set.leftList.length)
+        for (let i = 0; i<data.length; i ++) {
+          set.leftList.splice(i,0,data[i])
+        }
+        console.log(set.leftList)
+      })
+    },
     methods: {
       handleOpen(key, keyPath) {
         console.log(key, keyPath);
       },
       handleClose(key, keyPath) {
         console.log(key, keyPath);
+      },
+      handleSelect(key, keyPath) {
+        router.push('test')
+        console.log(key, keyPath);
       }
     }
   }
+
 </script>
 <style>
-  .sidebar{
-    height:100%;
+  .sidebar {
+    height: 100%;
   }
+
   .sidebar > ul {
-    height:100%;
+    height: 100%;
   }
 </style>

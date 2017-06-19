@@ -1,7 +1,7 @@
 <template>
   <div id="login">
-    <div class="content-box">
-      <div class="login-box">
+    <div class="login-box">
+      <div class="content">
         <div class="logo"><img class="logo-img" src="../assets/logo.png"/></div>
 
         <el-form :model="loginForm" :rules="rules" ref="ruleForm" class="login-row" label-width="0px">
@@ -88,14 +88,14 @@
     }
   }
 
-  .content-box {
+  .login-box {
     width: 100%;
     margin: 0 auto;
     position: relative;
     top: 30%;
     text-align: center;
     min-height: 340px;
-    .login-box {
+    .content {
       display: inline-block;
       width: 378px;
       padding: 32px 64px;

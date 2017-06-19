@@ -7,7 +7,7 @@
       <el-col :span="16">
         <div>
           <el-menu :default-active="activeIndex" class="el-menu-demo head-module" mode="horizontal"
-                   @select="handleSelect" router>
+                   @select="handleSelect">
             <el-menu-item class="head-module" index="1">CMDB</el-menu-item>
             <el-menu-item class="head-module" index="2">应用中心</el-menu-item>
             <el-menu-item class="head-module" index="3">任务中心</el-menu-item>
@@ -33,6 +33,7 @@
   </div>
 </template>
 <script>
+  import { store } from '../store'
   export default {
     data() {
       return {
@@ -42,6 +43,7 @@
     },
     methods: {
       handleSelect(key, keyPath) {
+        store.$emit('test',"1")
         console.log(key, keyPath);
       }
     }

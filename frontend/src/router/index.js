@@ -44,6 +44,10 @@ export default new Router({
         {
           path: '/',
           component: resolve => require(['@/components/home.vue'], resolve)
+        },
+        {
+          path: '/test',
+          component: resolve => require(['@/components/test.vue'], resolve)
         }
       ]
     },
