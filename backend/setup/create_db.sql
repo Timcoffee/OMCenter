@@ -9,6 +9,7 @@
 #grant all on omcenter.* to 'omcenter'@'%';
 #grant all on omcenter.* to 'omcenter'@'localhost';
 #grant all on omcenter.* to 'omcenter'@'127.0.0.1';
+#use omcenter;
 
 #auth models
 

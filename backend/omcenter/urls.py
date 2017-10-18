@@ -14,8 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from django.contrib import admin
+from django.conf.urls import patterns
 
-urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-]
+urlpatterns = patterns('',
+        url(r'^omservice/usermgmt/user/$', 'auth.views.user'),
+)

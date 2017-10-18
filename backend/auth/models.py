@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+import json
 
 # Create your models here.
 
@@ -11,18 +12,22 @@ class User(models.Model):
     nickName = models.CharField(max_length=45, unique=True)
     email = models.CharField(max_length=60, unique=True)
     phoneNum = models.CharField(max_length=30, unique=True)
-    comment = models.TextField(max_length=100, null=True)
+    comment = models.CharField(max_length=100, null=True)
     createTimestamp = models.DateTimeField(auto_now_add=True)
     updateTimestamp = models.DateTimeField(auto_now=True)
     class Meta:
         db_table = 'user'
     def __unicode__(self):
-        return u'%d %s %s %s %s' % (self.id, 
-                                    self.userName, 
-                                    self.nickName, 
-                                    self.email, 
-                                    self.phoneNum, 
-                                    self.comment)
+        ret = {'id': self.id,
+               'userName': self.userName,
+               'nickName': self.nickName,
+               'email': self.email,
+               'phoneNum': self.phoneNum,
+               'comment': self.comment,
+               'createTimestamp': str(self.createTimestamp),
+               'updateTimestamp': str(self.updateTimestamp)
+               }
+        return json.dumps(ret)
 
 class LocalAuth(models.Model):
     id = models.AutoField(primary_key=True)
@@ -39,8 +44,8 @@ class LocalAuth(models.Model):
 class Token(models.Model):
     id = models.AutoField(primary_key=True)
     uid = models.IntegerField(unique=True)
-    token = models.TextField(max_length=100, unique=True)
-    permission = models.TextField(max_length=280)
+    token = models.CharField(max_length=100, unique=True)
+    permission = models.CharField(max_length=280)
     ip = models.CharField(max_length=15)
     createTimestamp = models.DateTimeField(auto_now_add=True)
     updateTimestamp = models.DateTimeField(auto_now=True)
@@ -53,7 +58,7 @@ class Token(models.Model):
 class Role(models.Model):
     id = models.AutoField(primary_key=True)
     roleName = models.CharField(max_length=45)
-    comment = models.TextField(max_length=100)
+    comment = models.CharField(max_length=100)
     createTimestamp = models.DateTimeField(auto_now_add=True)
     updateTimestamp = models.DateTimeField(auto_now=True)
     class Meta:
@@ -76,7 +81,7 @@ class Module(models.Model):
     id = models.AutoField(primary_key=True)
     moduleName = models.CharField(max_length=45)
     nickName = models.CharField(max_length=45)
-    comment = models.TextField(max_length=100)
+    comment = models.CharField(max_length=100)
     createTimestamp = models.DateTimeField(auto_now_add=True)
     updateTimestamp = models.DateTimeField(auto_now=True)
     class Meta:
