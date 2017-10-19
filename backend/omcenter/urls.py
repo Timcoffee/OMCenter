@@ -18,4 +18,7 @@ from django.conf.urls import patterns
 
 urlpatterns = patterns('',
         url(r'^omservice/usermgmt/user/$', 'auth.views.user'),
+        url(r'^omservice/usermgmt/adduser/$', 'auth.views.addUser'),
+        url(r'^omservice/usermgmt/deluser/$', 'auth.views.delUser'),
+        url(r'^omservice/usermgmt/udpuser/$', 'auth.views.updUser'),
 )

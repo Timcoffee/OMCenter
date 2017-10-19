@@ -16,7 +16,7 @@
 create table user (
     id int not null AUTO_INCREMENT,
     userName varchar(45) not null unique,
-    nickName varchar(45) not null unique,
+    nickName varchar(45) default null,
     email varchar(60) not null unique,
     phoneNum varchar(30) not null unique,
     comment text default null,

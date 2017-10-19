@@ -9,7 +9,7 @@ import json
 class User(models.Model):
     id = models.AutoField(primary_key=True)
     userName = models.CharField(max_length=45, unique=True)
-    nickName = models.CharField(max_length=45, unique=True)
+    nickName = models.CharField(max_length=45, null=True)
     email = models.CharField(max_length=60, unique=True)
     phoneNum = models.CharField(max_length=30, unique=True)
     comment = models.CharField(max_length=100, null=True)
