@@ -63,18 +63,18 @@ def _getUser(uid=None, userName=None):
 
     return retInfo
 
-#def _getMultiUser(userName=[], uid=[]):
-#    userData = []
-#    if len(userName) != 0:
-#        for uname in userName:
-#            info = _getUser(userName=uname)
-#            userData.append(info)
-#    elif len(uid) != 0:
-#        for id in uid:
-#            info = _getUser(uid=id)
-#            userData.append(info)
-#
-#    return userData
+def _getMultiUser(userName=[], uid=[]):
+    userData = []
+    if len(userName) != 0:
+        for uname in userName:
+            info = _getUser(userName=uname)
+            userData.append(info)
+    elif len(uid) != 0:
+        for id in uid:
+            info = _getUser(uid=id)
+            userData.append(info)
+
+    return userData
 
 
 def _getAllUser():

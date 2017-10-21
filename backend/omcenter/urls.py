@@ -14,11 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from django.conf.urls import patterns
 
-urlpatterns = patterns('',
+urlpatterns = [
         url(r'^omservice/usermgmt/user/$', 'auth.views.user'),
         url(r'^omservice/usermgmt/adduser/$', 'auth.views.addUser'),
         url(r'^omservice/usermgmt/deluser/$', 'auth.views.delUser'),
         url(r'^omservice/usermgmt/udpuser/$', 'auth.views.updUser'),
-)
+]
