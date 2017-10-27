@@ -2,10 +2,12 @@
 from __future__ import unicode_literals
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from services import exceptions
 from services.userMgmt import getUserCNTLR
 from services.userMgmt import addUserCNTLR
 from services.userMgmt import delUserCNTLR
 from services.userMgmt import updUserCNTLR
+from services.userAuth import localUserCNTLR
 from services.dataFmt import fmtRequest
 from services.dataChk import chkDict
 import logging
@@ -15,6 +17,23 @@ import json
 #Get logger from django config.
 defLogger = logging.getLogger('platform')
 reqLogger = logging.getLogger('request')
+
+@csrf_exempt
+def userLogin(request):
+    defLogger.info(request)
+
+    #format request data.
+    postJson = fmtRequest(request)
+    print postJson
+    try:
+        result = localUserCNTLR(postJson['username'], postJson['password'])
+    except exceptions.UserAuthFailed, e:
+        print e
+        result = {}
+    except exceptions.UserDoesNotExist, e:
+        print e
+        result = {}
+    return HttpResponse(json.dumps(result))
 
 
 @csrf_exempt
