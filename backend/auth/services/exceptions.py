@@ -9,8 +9,8 @@ class UserMgmtException(Exception):
     def __str__(self):
         return self.msg
 
-class UserDoNotExist(UserMgmtException):
+class UserDoesNotExist(UserMgmtException):
     pass
 
-class UnknowError(UserMgmtException):
+class UnknownError(UserMgmtException):
     pass

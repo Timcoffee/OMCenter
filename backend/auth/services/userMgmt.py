@@ -13,6 +13,7 @@ def _fmtUserData(data):
     fmt = []
     if len(data) == 0:
         return fmt
+
     for d in data:
         userData = {'id': d.id,
                     'userName': d.userName,
@@ -36,7 +37,7 @@ def getUser(uid=None, userName=None):
 
     try:
         if uid is not None:
-            userDataHandler = User.objects.get(id=uid)
+            userDataHandler = User.objects.get(id=int(uid))
             user = uid
         elif userName is not None:
             userDataHandler = User.objects.get(userName=userName)
@@ -44,10 +45,10 @@ def getUser(uid=None, userName=None):
         uid = userDataHandler.id
         uName = userDataHandler.userName
         userData = _fmtUserData([userDataHandler, ])
-        getUserMsg = "Get \'%s\''s UID is %d" % (uName, uid)
+        getUserMsg = "Get User (\'{0}\':\'{1}\')".format(uid, uName) 
         status = 0
         defLogger.info(getUserMsg)
-        result = {'userdata': userData,
+        result = {'userdata': userData[0],
                   'handler': userDataHandler
                  }
     except User.DoesNotExist, e:
@@ -56,7 +57,7 @@ def getUser(uid=None, userName=None):
     except Exception, e:
         getUserMsg = ("An unknown error occurred " 
                      "while getting user {0}: {1}".format(user,str(e)))
-        raise exceptions.UnknownError(e)
+        raise exceptions.UnknownError(str(e))
 
     retInfo = {'status': status,
                'result': result,
@@ -65,7 +66,7 @@ def getUser(uid=None, userName=None):
 
     return retInfo
 
-def _getMultiUser(userName=[], uid=[]):
+def getMultiUser(userName=[], uid=[]):
     userData = []
     if len(userName) != 0:
         for uname in userName:
@@ -114,11 +115,15 @@ def getUserCNTLR(uid=None, userName=None):
     try:
         if uid is not None:
             retInfo = getUser(uid=uid)
+            del(retInfo['result']['handler'])
+            retInfo['result'] = [retInfo['result'], ]
         elif userName is not None:
             retInfo = getUser(userName=userName)
+            del(retInfo['result']['handler'])
+            retInfo['result'] = [retInfo['result'], ]
         else:
             retInfo = getAllUser()
-    except exceptions.UserMgmtDoesNotExsit, e:
+    except exceptions.UserDoesNotExist, e:
         status = 1001
         getUserMsg = str(e)
         defLogger.info(getUserMsg)
@@ -133,8 +138,6 @@ def getUserCNTLR(uid=None, userName=None):
                    'result': '',
                    'msg': getUserMsg,
                   }
-    else:
-       del(retInfo['result']['handler'])
 
     return retInfo
 
@@ -177,65 +180,114 @@ def addUserCNTLR(userName,
                 'msg': addUserMsg,
                 'result': ''
                }
-    except exceptions.UserMgmtDoesNotExsit:
+    except exceptions.UserDoesNotExist:
         pass
     except exceptions.UnknownError, e:
         status = 9003
-        getUserMsg = str(e)
-        defLogger.error(getUserMsg)
-        defLogger.exception(getUserMsg)
+        addUserMsg = str(e)
+        defLogger.error(addUserMsg)
+        defLogger.exception(addUserMsg)
         return {'status': status,
                 'msg': addUserMsg,
                 'result': ''
                }
 
     try:
-        addUserMsg = addUser(userName=userName, 
-                             nickName=nickName,
-                             email=email,
-                             phoneNum=phoneNum,
-                             comment=comment)
+        ret = addUser(userName=userName, 
+                      nickName=nickName,
+                      email=email,
+                      phoneNum=phoneNum,
+                      comment=comment)
+        defLogger.info(ret['msg'])
+        return ret
     except exceptions.UnknownError, e:
         status = 9003
         addUserMsg = str(e)
-        defLogger.error(str(e))
-        defLogger.exception(str(e))
+        defLogger.error(addUserMsg)
+        defLogger.exception(addUserMsg)
 
-    return {'status': status,
-           'msg': addUserMsg,
-           'result': ''
-           }
+        return {'status': status,
+                'msg': addUserMsg,
+                'result': ''
+               }
 
 def _delMultiUsers(uid=[]):
     pass
 
-def  delUserCNTLR(uid):
-    userData = getUserCNTLR(uid=uid)
-    if userData['status'] == 1001:
-        msg = "User does not exist."
+def delUser(uid):
+    try:
+        userData = getUser(uid=uid)
+        handler = userData['result']['handler']
+    except exceptions.UserDoesNotExist:
         status = 0
-    elif userData['status'] == 0:
-        userDataHandler = userData['object']
-        try:
-            userName = userDataHandler.userName
-            userDataHandler.delete()
-            msg = "Delete user(\'{0}\') successfully.".format(userName)
-            status = 0
-            defLogger.info(msg)
-        except Exception, e:
-            msg = "Failed to delete user data (Unknown error)."
-            defLogger.error(msg)
-            defLogger.exception(str(e))
-            status = 9003
-    else:
-        msg = "Failed to get user data."
-        defLogger.error(msg)
-        status = userData['status']
+        delUserMsg = "User does not exist."
+        return {"status": status,
+                "msg": delUserMsg,
+                "result": ""
+               }
+    except exceptions.UnknownError, e:
+        raise exceptions.UnknownError(str(e))
+
+    try:
+        userName = handler.userName
+        handler.delete()
+        status = 0
+        delUserMsg = "Delete user(\'{0}\') successfully.".format(userName)
+    except Exception, e:
+        delUserMsg = "Failed to delete user data (Unknown error): {0}.".format(
+                                                                     str(e))
+        raise exceptions.UnknownError(delUserMsg)
 
     return {"status": status,
-            "msg": msg,
+            "msg": delUserMsg,
             "result": ""
            }
+
+def  delUserCNTLR(uid):
+    try:
+        ret = delUser(uid)
+        defLogger.info(ret['msg'])
+        return ret
+    except exceptions.UnknownError, e:
+        status = 9003
+        delUserMsg = str(e)
+        defLogger.error(delUserMsg)
+        defLogger.exception(str(e))
+
+        return {'status': status,
+                'msg': delUserMsg,
+                'result': ''
+               }
+
+def updUser(uid,
+            userName,
+            email,
+            phoneNum,
+            nickName,
+            comment):
+    try:
+        userData = getUser(uid=uid)
+    except exceptions.UserDoesNotExist, e:
+        raise exceptions.UserDoesNotExist(str(e))
+    except exceptions.UnknownError, e:
+        raise exceptions.UnknownError(str(e))
+
+    try:
+        handler = userData['result']['handler']
+        handler.userName = userName
+        handler.email = email
+        handler.phoneNum = phoneNum
+        handler.nickName = nickName
+        handler.comment = comment
+        handler.save()
+        status = 0
+        updUserMsg = "Update user(\'{0}\') successfully.".format(userName)
+        return {'status': status,
+                'msg': updUserMsg,
+                'result': ''
+               }
+    except Exception, e:
+        raise exceptions.UnknownError(str(e))
 
 def updUserCNTLR(uid, 
                  userName,
@@ -243,29 +295,26 @@ def updUserCNTLR(uid,
                  phoneNum,
                  nickName,
                  comment):
-    userData = getUserCNTLR(uid=uid)
-    if userData['status'] == 0:
-        userDataHandler = userData['object']
-        try:
-            userDataHandler.userName = userName
-            userDataHandler.email = email
-            userDataHandler.phoneNum = phoneNum
-            userDataHandler.nickName = nickName
-            userDataHandler.comment = comment
-            userDataHandler.save()
-            msg = "Update user(\'{0}\') successfully.".format(userName)
-            status = 0
-            defLogger.info(msg)
-        except Exception, e:
-            msg = "Failed to update user data (Unknown error)."
-            defLogger.error(msg)
-            defLogger.exception(str(e))
-            status = 9003
+    try:
+        ret = updUser(uid,
+                      userName,
+                      email,
+                      phoneNum,
+                      nickName,
+                      comment)
+        defLogger.info(ret['msg'])
+        return ret
+    except exceptions.UserDoesNotExist, e:
+        status = 1001
+        updUserMsg = "Failed to update userdata: {0}".format(str(e))
+        defLogger.error(updUserMsg)
+    except exceptions.UnknownError, e:
+        status = 9003
+        updUserMsg = "Failed to update userdata: {0}".format(str(e))
+        defLogger.error(updUserMsg)
+        defLogger.exception(updUserMsg)
 
-        return {'status': status,
-                'msg': msg,
-                'result': ''
-               }
-    else:
-        return userData
-
+    return {'status': status,
+            'msg': updUserMsg,
+            'result': ''
+           }
