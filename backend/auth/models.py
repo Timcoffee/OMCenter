@@ -108,11 +108,18 @@ class Permission(models.Model):
 
 class ModuleRelationship(models.Model):
     id = models.AutoField(primary_key=True)
-    mid = models.IntegerField(unique=True)
-    pid = models.IntegerField(unique=True)
+#    mid = models.IntegerField(unique=True)
+    mid = models.ForeignKey(Module, 
+                            on_delete=models.CASCADE,
+                            related_name='mr_mid_set'
+                            )
+#    pid = models.IntegerField(unique=True)
+    pid = models.ForeignKey(Module, 
+                            on_delete=models.CASCADE,
+                            related_name='mr_pid_set')
     createTimestamp = models.DateTimeField(auto_now_add=True)
     updateTimestamp = models.DateTimeField(auto_now=True)
     class Meta:
         db_table = 'moduleRelationship'
     def __unicode__(self):
-        return u'%d %d %d' % (self.mid, self.rid, self.permission)
+        return u'%d %d %d' % (self.mid, self.pid)
