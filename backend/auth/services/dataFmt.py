@@ -10,10 +10,10 @@ reqLogger = logging.getLogger('request')
 def fmtRequest(request):
     defLogger.info(request)
     if not request.POST:
-        mateData = request.META
+        metaData = request.META
 
         try:
-            rawData = mateData.get('wsgi.input', {})
+            rawData = metaData.get('wsgi.input', {})
         except ValueError:
             errorMsg = "No found key \'wsgi.input\': "
             defLogger.exception(errorMsg)
@@ -21,7 +21,7 @@ def fmtRequest(request):
             return rawData
 
         try:
-            contentLen = mateData.get('CONTENT_LENGTH', 0)
+            contentLen = metaData.get('CONTENT_LENGTH', 0)
         except ValueError:
             errorMsg = "No found key \'CONTENT_LENGTH\': "
             defLogger.exception(errorMsg)
