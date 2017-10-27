@@ -17,9 +17,10 @@ from django.conf.urls import url
 from auth import views as auth
 
 urlpatterns = [
-        url(r'^omservice/userauth/userlogin/$', auth.userLogin),
-        url(r'^omservice/usermgmt/user/$', auth.user),
-        url(r'^omservice/usermgmt/adduser/$', auth.addUser),
-        url(r'^omservice/usermgmt/deluser/$', auth.delUser),
-        url(r'^omservice/usermgmt/udpuser/$', auth.updUser),
+        url(r'^omservice/userauth/userlogin/$', auth.userLogin, name='userLogin'),
+        url(r'^omservice/usermgmt/user/$', auth.user, name='user'),
+        url(r'^omservice/usermgmt/adduser/$', auth.addUser, name='addUser'),
+        url(r'^omservice/usermgmt/deluser/$', auth.delUser, name='delUser'),
+        url(r'^omservice/usermgmt/udpuser/$', auth.updUser, name='updUser'),
+
 ]

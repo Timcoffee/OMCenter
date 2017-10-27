@@ -8,24 +8,24 @@ class GetUserTestCase(TestCase):
         self.client = Client()
 
     def tearDown(self):
-        user = User.objects.get(userName="test")
-        user.delete()
         try:
+            user = User.objects.get(userName="test1")
+            user.delete()
             user = User.objects.get(userName="test2")
             user.delete()
         except Exception:
             pass
 
     def testGetUser(self):
-        userDataHandler = User(userName='test', 
+        userDataHandler = User(userName='test1', 
                 nickName='nicktest', 
-                email='test@test.com', 
-                phoneNum='11111111111', 
+                email='test1@test.com', 
+                phoneNum='21111111111', 
                 comment='')
         userDataHandler.save()
 
         response = self.client.post('/omservice/usermgmt/user/', 
-                                    {'userName': 'test'})
+                                    {'userName': 'test1'})
 
         data = json.loads(response.content)
 
@@ -37,10 +37,10 @@ class GetUserTestCase(TestCase):
         self.assertEqual(data['status'], 0)
 
     def testGetAllUser(self):
-        userDataHandler = User(userName='test', 
+        userDataHandler = User(userName='test1', 
                 nickName='nicktest', 
-                email='test@test.com', 
-                phoneNum='11111111111', 
+                email='test1@test.com', 
+                phoneNum='21111111111', 
                 comment='')
         userDataHandler.save()
         userDataHandler = User(userName='test2', 

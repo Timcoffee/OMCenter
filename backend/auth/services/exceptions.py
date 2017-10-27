@@ -12,7 +12,7 @@ class UserMgmtException(Exception):
 class UserDoesNotExist(UserMgmtException):
     pass
 
-class UnknowError(UserMgmtException):
+class UnknownError(UserMgmtException):
     pass
 
 class UserAuthException(Exception):
